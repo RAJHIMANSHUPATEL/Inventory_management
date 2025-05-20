@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
         status: 0,
         message: "Validation error",
         data: null,
-        error: "All fields (name, email, phone, password, role) are required.",
+        error: "All fields are required.",
       });
     }
 

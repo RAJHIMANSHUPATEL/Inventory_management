@@ -23,7 +23,6 @@ const productSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        type: Number,
         required: [true, "Product price is required"],
         min: [0, "Price must be positive number"],
     },
@@ -40,11 +39,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
+    // createdBy: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    //     required: true,
+    // },
 }, {timeseries})
 
 const Product = new mongoose.model("Product", productSchema);
