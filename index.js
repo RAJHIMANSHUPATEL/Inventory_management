@@ -1,13 +1,17 @@
 const express = require("express");
 const app = express();
 const userRouter = require("./routes/user.route") 
+const productRouter = require("./routes/product.route") 
 require("dotenv").config();
 require("./db/conn")
 
 app.use(express.json())
 
+// routes 
+app.use("/api/user", userRouter)
+app.use("/api/products", productRouter)
 
-app.use("/api", userRouter)
+
 app.get("/", (req, res)=> {
     res.send("Inventory Backend");
 })

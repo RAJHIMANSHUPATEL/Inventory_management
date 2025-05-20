@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
     //     ref: "User",
     //     required: true,
     // },
-}, {timeseries})
+}, {timestamps: true})
 
 const Product = new mongoose.model("Product", productSchema);
 
