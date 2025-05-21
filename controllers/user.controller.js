@@ -25,8 +25,7 @@ const registerUser = async (req, res) => {
     if (!name || !email || !phone || !password || !role) {
       return res.status(400).json({
         status: 0,
-        message: "Validation error",
-        data: null,
+        data: [],
         error: "All fields are required.",
       });
     }
@@ -35,8 +34,7 @@ const registerUser = async (req, res) => {
     if (!isValidEmail(email)) {
       return res.status(400).json({
         status: 0,
-        message: "Validation error",
-        data: null,
+        data: [],
         error: "Please provide a valid email address.",
       });
     }
@@ -45,8 +43,7 @@ const registerUser = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({
         status: 0,
-        message: "Validation error",
-        data: null,
+        data: [],
         error: "Password must be at least 6 characters long.",
       });
     }
@@ -56,8 +53,7 @@ const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         status: 0,
-        message: "User already exists",
-        data: null,
+        data: [],
         error: "The provided email is already registered.",
       });
     }
@@ -67,8 +63,7 @@ const registerUser = async (req, res) => {
     if (existingPhone) {
       return res.status(409).json({
         status: 0,
-        message: "Phone already exists",
-        data: null,
+        data: [],
         error: "The provided phone number is already registered.",
       });
     }
@@ -112,8 +107,7 @@ const registerUser = async (req, res) => {
     console.error("Register error:", error);
     return res.status(500).json({
       status: 0,
-      message: "Internal server error",
-      data: null,
+      data: [],
       error: error.message || "Something went wrong.",
     });
   }
@@ -132,8 +126,7 @@ const loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         status: 0,
-        message: "Validation error",
-        data: null,
+        data: [],
         error: "Email and password are required.",
       });
     }
@@ -144,8 +137,7 @@ const loginUser = async (req, res) => {
       console.log(`No user found with email: ${email}`);
       return res.status(400).json({
         status: 0,
-        message: "Invalid credentials",
-        data: null,
+        data: [],
         error: "Invalid email or password.",
       });
     }
@@ -163,8 +155,7 @@ const loginUser = async (req, res) => {
       console.error(`User ${user._id} has no password field in database`);
       return res.status(500).json({
         status: 0,
-        message: "Server error",
-        data: null,
+        data: [],
         error: "Account configuration issue. Please contact support.",
       });
     }
@@ -175,8 +166,7 @@ const loginUser = async (req, res) => {
       if (!isMatch) {
         return res.status(400).json({
           status: 0,
-          message: "Invalid credentials",
-          data: null,
+          data: [],
           error: "Invalid email or password.",
         });
       }
@@ -187,7 +177,6 @@ const loginUser = async (req, res) => {
       // Success response - don't include password in response
       return res.json({
         status: 1,
-        message: "Login successful",
         data: {
           token,
           user: {
@@ -203,36 +192,16 @@ const loginUser = async (req, res) => {
       console.error(`bcrypt error for user ${user._id}:`, bcryptError);
       return res.status(500).json({
         status: 0,
-        message: "Server error",
-        data: null,
+        data: [],
         error: "Authentication error. Please try again later.",
       });
     }
-
-    // Generate JWT token
-    const token = generateToken(user);
-
-    // Success response
-    return res.json({
-      status: 1,
-      message: "Login successful",
-      data: {
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      },
-      error: null,
-    });
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({
       status: 0,
       message: "Server error",
-      data: null,
+      data: [],
       error: err.message || "An unexpected error occurred.",
     });
   }

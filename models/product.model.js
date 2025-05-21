@@ -7,8 +7,8 @@ const productSchema = new mongoose.Schema({
         trim: true,
     },
     sku: {
-        type: String, 
-        required: [true, "Product SKU is requried"],
+        type: String,
+        required: [true, "Product SKU is required"],
         unique: true,
         uppercase: true,
     },
@@ -24,12 +24,12 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: [true, "Product price is required"],
-        min: [0, "Price must be positive number"],
+        min: [0, "Price must be a positive number"],
     },
     quantity: {
         type: Number,
-        required: [true, "Product price is required"],
-        min: [0, "Qunatity must be 0 or more"],
+        required: [true, "Product quantity is required"],
+        min: [0, "Quantity must be 0 or more"],
     },
     imageUrl: {
         type: String,
@@ -39,13 +39,20 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    supplier: {
+        type: String,
+        required: [true, "Please add a supplier"],
+    },
+    purchaseDate: {
+        type: Date,
+        required: true,
+    },
     // createdBy: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //     required: true,
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
     // },
-}, {timestamps: true})
+}, { timestamps: true });
 
-const Product = new mongoose.model("Product", productSchema);
-
+const Product = mongoose.model("Product", productSchema);
 module.exports = Product;
