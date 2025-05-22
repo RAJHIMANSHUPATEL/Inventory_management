@@ -17,9 +17,14 @@ const productSchema = new mongoose.Schema({
         default: "",
     },
     category: {
-        type: String,
-        required: true,
-        enum: ["electronics", "clothing", "office", "food", "other"],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
+    },
+    brand: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand',
+        required: true
     },
     price: {
         type: Number,

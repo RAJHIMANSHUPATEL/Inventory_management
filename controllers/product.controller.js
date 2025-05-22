@@ -7,7 +7,7 @@ const addProduct = async (req, res) => {
     if (!name || !sku || !category || !price || !quantity || !supplier || !purchaseDate) {
         return res.status(400).json({
             status: 0,
-            data: [],
+            data: null,
             error: "All fields are required"
         });
     }
@@ -17,7 +17,7 @@ const addProduct = async (req, res) => {
     if (existingProduct) {
         return res.status(400).json({
             status: 0,
-            data: [],
+            data: null,
             error: "SKU already exists"
         });
     }
@@ -33,41 +33,76 @@ const addProduct = async (req, res) => {
 }
 
 // get all produts
-const getProducts = async (req, res)=> {
+const getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const { search, category, lowStock, page = 1, limit = 10 } = req.query
+
+        const query = {};
+
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { sky: { $regex: search, $options: "i" } },
+            ];
+        }
+
+        // Filter by category
+        if (category && category !== "all") {
+            query.category = category = category;
+        }
+
+        // Low stock filter 
+        if (lowStock === "true") {
+            query.quantity = { $lte: 5 };
+        }
+
+        const total = await Product.countDocuments(query);
+
+        const products = await Product.find(query)
+            .populate('brand', 'name')
+            .populate('category', 'name')
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+
+
         res.status(200).json({
             status: 1,
-            data: products,
+            data: {
+                products,
+                total,
+                page: parseInt(page),
+                pages: Math.ceil(total / limit),
+            },
             error: null
         })
     } catch (error) {
         res.status(400).json({
             status: 0,
-            data: [],
-            error: "An error occurred."
+            data: null,
+            error: "Server error"
         })
     }
 }
 
-// cosnt getProductBySku
 
-const getProductBySku = async (req, res)=> {
-    const {sku} = req.body;
+// cosnt getProductBySku
+const getProductBySku = async (req, res) => {
+    const { sku } = req.body;
     try {
-        if(!sku){
+        if (!sku) {
             return res.status(400).json({
                 status: 0,
-                data: [],
+                data: null,
                 error: "Please provide a sku"
             })
         }
 
-        const product = await Product.findOne({sku});
-        if(!product){
+        const product = await Product.findOne({ sku });
+        if (!product) {
             return res.status(400).json({
                 status: 0,
-                data: [],
+                data: null,
                 error: "Invalid SKU!"
             })
         }
@@ -80,12 +115,11 @@ const getProductBySku = async (req, res)=> {
     } catch (error) {
         res.status(400).json({
             status: 0,
-            data: [],
+            data: null,
             error: "An Error Occurred"
         })
     }
 }
-
 
 // Update product quantity
 const updateProductQuantity = async (req, res) => {
@@ -95,7 +129,7 @@ const updateProductQuantity = async (req, res) => {
     if (!sku || !quantityChange || !action) {
         return res.status(400).json({
             status: 0,
-            data: [],
+            data: null,
             error: "All fields are required"
         });
     }
@@ -116,14 +150,14 @@ const updateProductQuantity = async (req, res) => {
         if (!product) {
             return res.status(404).json({
                 status: 0,
-                data: [],
+                data: null,
                 error: "Invalid SKU!"
             });
         }
         if (action !== "restock" && action !== "ship") {
             return res.status(400).json({
                 status: 0,
-                data: [],
+                data: null,
                 error: "Invalid Action"
             })
         }
@@ -144,7 +178,7 @@ const updateProductQuantity = async (req, res) => {
         if (newQuantity < 0) {
             return res.status(400).json({
                 status: 0,
-                data: [],
+                data: null,
                 error: "Insufficient stock!"
             });
         }
@@ -152,7 +186,7 @@ const updateProductQuantity = async (req, res) => {
         product.quantity = newQuantity;
         const updatedProduct = await product.save();
 
-         res.status(200).json({
+        res.status(200).json({
             status: 1,
             data: updatedProduct,
             error: null
@@ -160,9 +194,9 @@ const updateProductQuantity = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-         res.status(500).json({
+        res.status(500).json({
             status: 0,
-            data: [],
+            data: null,
             error: "Server error"
         });
     }

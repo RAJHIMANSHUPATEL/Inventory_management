@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
     if (!name || !email || !phone || !password || !role) {
       return res.status(400).json({
         status: 0,
-        data: [],
+        data: null,
         error: "All fields are required.",
       });
     }
@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
     if (!isValidEmail(email)) {
       return res.status(400).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Please provide a valid email address.",
       });
     }
@@ -43,7 +43,7 @@ const registerUser = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Password must be at least 6 characters long.",
       });
     }
@@ -53,7 +53,7 @@ const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         status: 0,
-        data: [],
+        data: null,
         error: "The provided email is already registered.",
       });
     }
@@ -63,7 +63,7 @@ const registerUser = async (req, res) => {
     if (existingPhone) {
       return res.status(409).json({
         status: 0,
-        data: [],
+        data: null,
         error: "The provided phone number is already registered.",
       });
     }
@@ -107,7 +107,7 @@ const registerUser = async (req, res) => {
     console.error("Register error:", error);
     return res.status(500).json({
       status: 0,
-      data: [],
+      data: null,
       error: error.message || "Something went wrong.",
     });
   }
@@ -126,7 +126,7 @@ const loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Email and password are required.",
       });
     }
@@ -137,7 +137,7 @@ const loginUser = async (req, res) => {
       console.log(`No user found with email: ${email}`);
       return res.status(400).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Invalid email or password.",
       });
     }
@@ -155,7 +155,7 @@ const loginUser = async (req, res) => {
       console.error(`User ${user._id} has no password field in database`);
       return res.status(500).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Account configuration issue. Please contact support.",
       });
     }
@@ -166,7 +166,7 @@ const loginUser = async (req, res) => {
       if (!isMatch) {
         return res.status(400).json({
           status: 0,
-          data: [],
+          data: null,
           error: "Invalid email or password.",
         });
       }
@@ -192,7 +192,7 @@ const loginUser = async (req, res) => {
       console.error(`bcrypt error for user ${user._id}:`, bcryptError);
       return res.status(500).json({
         status: 0,
-        data: [],
+        data: null,
         error: "Authentication error. Please try again later.",
       });
     }
@@ -201,7 +201,7 @@ const loginUser = async (req, res) => {
     return res.status(500).json({
       status: 0,
       message: "Server error",
-      data: [],
+      data: null,
       error: err.message || "An unexpected error occurred.",
     });
   }
