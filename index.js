@@ -23,9 +23,9 @@ app.use("/api/brand", brandRouter)
 app.use("/api/product", productRouter)
 
 
-// app.get("/", (req, res)=> {
-//     res.send("Inventory Backend");
-// })
+app.get("/", (req, res)=> {
+    res.send("Inventory Backend");
+})
 
 app.listen(4000, ()=> {
     console.log("Server is trunning on port 4000");

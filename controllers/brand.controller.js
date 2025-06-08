@@ -1,7 +1,7 @@
 const Brand = require("../models/brand.model");
 
 // add a category
-const addBrand = async () => {
+const addBrand = async (req, res) => {
     try {
         const { name, logoUrl, isActive } = req.body;
         if (!name || !isActive) {
