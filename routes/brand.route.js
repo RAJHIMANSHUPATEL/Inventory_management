@@ -4,7 +4,7 @@ const { addBrand, getAllBrands } = require("../controllers/brand.controller");
 
 const router = express.Router()
 
-router.post("/", getAllBrands)
+router.get("/", getAllBrands)
 router.post("/add-brand", addBrand)
 
 module.exports = router;
