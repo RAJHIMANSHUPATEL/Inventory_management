@@ -2,9 +2,9 @@ const Product = require("../models/product.model");
 
 // Add new product
 const addProduct = async (req, res) => {
-    const { name, sku, description, category, price, quantity, lowStockAlert, supplier, purchaseDate } = req.body;
+    const { name, sku, description, category, brand, price, quantity, lowStockAlert, supplier, purchaseDate } = req.body;
 
-    if (!name || !sku || !category || !price || !quantity || !supplier || !purchaseDate) {
+    if (!name || !sku || !category || !brand || !price || !quantity || !supplier || !purchaseDate) {
         return res.status(400).json({
             status: 0,
             data: null,
@@ -23,14 +23,15 @@ const addProduct = async (req, res) => {
     }
 
     const newProduct = await Product.create({
-        name, sku, description, category, price, quantity, lowStockAlert, supplier, purchaseDate
+        name, sku, description, category, brand, price, quantity, lowStockAlert, supplier, purchaseDate
     });
     res.status(201).json({
         status: 1,
         data: newProduct,
         error: null,
     });
-}
+};
+
 
 // get all produts
 const getProducts = async (req, res) => {
